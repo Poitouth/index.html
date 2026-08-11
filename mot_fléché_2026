@@ -51,7 +51,6 @@
     overflow: hidden;
   }
   header::before{
-    /* clin d'oeil discret au motif circulaire de la marque, sans dégradé criard */
     content: "";
     position: absolute;
     top: -60px;
@@ -106,8 +105,9 @@
   }
   .intro strong{ color: var(--ink); }
 
-  /* ---------- Fallback (no-JS) ---------- */
-  .fallback{
+  /* ---------- Fallback (no-JS) : contenu 100% statique, jamais touché par le JS ---------- */
+  noscript .fallback{
+    display: block;
     background: var(--paper);
     border: 1px solid var(--line);
     border-radius: var(--radius);
@@ -133,6 +133,14 @@
     display: flex;
     flex-direction: column;
     gap: 1.4rem;
+  }
+  #puzzle:empty::before{
+    content: "Chargement du jeu…";
+    display: block;
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: .9rem;
+    padding: 1rem;
   }
 
   .clue-card{
@@ -168,6 +176,7 @@
   .clue-text{
     font-size: .92rem;
     color: var(--ink);
+    margin: 0;
   }
 
   .cells-row{
@@ -276,18 +285,27 @@
     trouvez-les, ils annoncent tout ce qui vous attend à la rentrée.
   </p>
 
-  <!-- Contenu accessible sans JavaScript -->
+  <!--
+    Fallback 100% statique : visible uniquement si JavaScript est désactivé.
+    Ce contenu n'est ni généré ni modifié par le script plus bas.
+  -->
   <noscript>
     <div class="fallback">
       <h2>Les indices</h2>
-      <ol id="noscript-clues"></ol>
+      <ol>
+        <li>On l'a vécue trois fois depuis mai, la dernière ayant battu tous les records de juillet. (8 lettres)</li>
+        <li>Le mot que la France — et votre organisation — vont devoir conjuguer avec le climat, encore et encore. (10 lettres)</li>
+        <li>Le nouveau standard européen qui évite à votre PME/ETI de crouler sous les questionnaires ESG de vos clients. (4 lettres)</li>
+        <li>Le maillon de votre chaîne de valeur qui concentre l'essentiel de votre empreinte carbone (indice : ce n'est pas votre siège). (6 lettres)</li>
+      </ol>
       <details>
         <summary>Voir les réponses</summary>
-        <p class="answers" id="noscript-answers"></p>
+        <p class="answers">CANICULE · ADAPTATION · VSME · ACHATS</p>
       </details>
     </div>
   </noscript>
 
+  <!-- Grille interactive : construite par le script si JavaScript est actif -->
   <div id="puzzle" aria-live="polite"></div>
 
   <div class="actions">
@@ -307,6 +325,7 @@
   /* ------------------------------------------------------------
      Contenu du mot fléché — à mettre à jour chaque année.
      Chaque entrée : { indice: texte de la définition, reponse: mot en MAJUSCULES sans accent ni espace }
+     NB : si vous changez ces mots, pensez à mettre à jour aussi le bloc <noscript> statique ci-dessus.
   ------------------------------------------------------------ */
   var MOTS = [
     {
@@ -329,23 +348,11 @@
 
   var puzzleEl = document.getElementById("puzzle");
   var revealBtn = document.getElementById("reveal-btn");
-  var noscriptClues = document.getElementById("noscript-clues");
-  var noscriptAnswers = document.getElementById("noscript-answers");
 
   var ARROW_SVG =
     '<svg class="arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
     '<path d="M4 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" ' +
     'stroke-linecap="round" stroke-linejoin="round"/></svg>';
-
-  function buildNoscriptFallback() {
-    // Rempli même si JS tourne, au cas où (ne coûte rien) ; masqué par <noscript> côté rendu.
-    MOTS.forEach(function (mot) {
-      var li = document.createElement("li");
-      li.textContent = mot.indice + " (" + mot.reponse.length + " lettres)";
-      noscriptClues.appendChild(li);
-    });
-    noscriptAnswers.textContent = MOTS.map(function (m) { return m.reponse; }).join(" · ");
-  }
 
   function buildPuzzle() {
     MOTS.forEach(function (mot, wordIndex) {
@@ -475,7 +482,6 @@
     });
   }
 
-  buildNoscriptFallback();
   buildPuzzle();
 
   puzzleEl.addEventListener("input", handleInput);
