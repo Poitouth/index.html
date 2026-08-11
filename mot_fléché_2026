@@ -4,12 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Le mot fléché de la rentrée | ekodev by EPSA</title>
-<meta name="description" content="Un petit jeu RSE avant la rentrée : quatre mots se cachent dans l'actualité de l'été 2026, par ekodev by EPSA.">
+<meta name="description" content="Une grille de mots fléchés RSE avant la rentrée, avec un mot mystère à découvrir — par ekodev by EPSA.">
 <style>
   :root{
     --forest: #0B3B3C;
     --forest-deep: #072526;
     --gold: #F2C230;
+    --gold-soft: #FCF3D8;
     --gold-ink: #6b4f06;
     --blue-grey: #9FB6BE;
     --paper: #FFFFFF;
@@ -21,7 +22,6 @@
   }
 
   *{ box-sizing: border-box; }
-
   html{ -webkit-text-size-adjust: 100%; }
 
   body{
@@ -76,36 +76,39 @@
   }
   header h1{
     margin: 0 auto;
-    max-width: 30rem;
-    font-size: clamp(1.5rem, 4.5vw, 2.1rem);
+    max-width: 32rem;
+    font-size: clamp(1.4rem, 4.2vw, 2rem);
     font-weight: 800;
     letter-spacing: -0.01em;
     position: relative;
   }
   header p.kicker{
     margin: .6rem auto 0;
-    max-width: 26rem;
-    color: rgba(255,255,255,0.78);
+    max-width: 28rem;
+    color: rgba(255,255,255,0.8);
     font-size: .95rem;
     position: relative;
   }
 
   /* ---------- Main ---------- */
   main{
-    max-width: 640px;
+    max-width: 760px;
     margin: 0 auto;
-    padding: 2rem 1.25rem 3rem;
+    padding: 2rem 1.1rem 3rem;
   }
 
   .intro{
     text-align: center;
     color: var(--ink-soft);
     font-size: 1rem;
-    margin: 0 0 2rem;
+    margin: 0 0 1.75rem;
+    max-width: 34rem;
+    margin-left: auto;
+    margin-right: auto;
   }
   .intro strong{ color: var(--ink); }
 
-  /* ---------- Fallback (no-JS) : contenu 100% statique, jamais touché par le JS ---------- */
+  /* ---------- Fallback (no-JS) : contenu 100% statique ---------- */
   noscript .fallback{
     display: block;
     background: var(--paper);
@@ -114,120 +117,138 @@
     padding: 1.25rem 1.25rem 1.5rem;
     margin-bottom: 2rem;
   }
-  .fallback h2{
-    font-size: 1rem;
-    margin: 0 0 .75rem;
-  }
+  .fallback h2{ font-size: 1rem; margin: 0 0 .75rem; }
   .fallback ol{ margin: 0; padding-left: 1.2rem; }
   .fallback li{ margin-bottom: .5rem; }
   .fallback details{ margin-top: 1rem; }
-  .fallback summary{
-    cursor: pointer;
-    font-weight: 700;
-    color: var(--forest);
-  }
+  .fallback summary{ cursor: pointer; font-weight: 700; color: var(--forest); }
   .fallback .answers{ margin-top: .6rem; color: var(--ink-soft); }
+  .fallback .cta{ margin-top: 1rem; }
 
-  /* ---------- Puzzle ---------- */
-  #puzzle{
-    display: flex;
-    flex-direction: column;
-    gap: 1.4rem;
+  /* ---------- Grid wrapper ---------- */
+  .grid-wrapper{
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 1.75rem;
   }
-  #puzzle:empty::before{
-    content: "Chargement du jeu…";
+  .grid-scroll{
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    max-height: 62vh;
+    padding-bottom: .35rem;
+  }
+  #grid{
+    display: grid;
+    gap: 2px;
+    width: max-content;
+    margin: 0 auto;
+  }
+  #grid:empty::before{
+    content: "Chargement de la grille…";
     display: block;
-    text-align: center;
     color: var(--ink-soft);
     font-size: .9rem;
     padding: 1rem;
   }
-
-  .clue-card{
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 1rem 1.1rem 1.15rem;
-    transition: border-color .15s ease;
+  .cell-wrap{
+    position: relative;
+    width: 1.75rem;
+    height: 1.75rem;
   }
-  .clue-card.is-complete{
-    border-color: var(--gold);
+  .cell-blocked{
+    width: 1.75rem;
+    height: 1.75rem;
   }
-
-  .clue-head{
-    display: flex;
-    align-items: flex-start;
-    gap: .65rem;
-    margin-bottom: .85rem;
-  }
-  .clue-number{
-    flex: none;
-    width: 1.6rem;
-    height: 1.6rem;
-    border-radius: 50%;
-    background: var(--forest);
-    color: #fff;
-    font-size: .8rem;
+  .cell-number{
+    position: absolute;
+    top: 1px;
+    left: 2px;
+    font-size: .5rem;
     font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    color: var(--ink-soft);
+    line-height: 1;
+    pointer-events: none;
+    z-index: 1;
   }
-  .clue-text{
-    font-size: .92rem;
-    color: var(--ink);
-    margin: 0;
-  }
-
-  .cells-row{
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-    padding-left: 2.25rem;
-  }
-  .arrow{
-    flex: none;
-    width: 18px;
-    height: 18px;
-    color: var(--gold-ink);
-  }
-  .cells{
-    display: flex;
-    gap: .3rem;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: 2px;
-  }
-  .cells input{
-    flex: none;
-    width: 2.05rem;
-    height: 2.35rem;
+  .cell-wrap input{
+    width: 100%;
+    height: 100%;
     text-align: center;
     text-transform: uppercase;
-    font-size: 1.05rem;
+    font-size: .95rem;
     font-weight: 700;
     font-family: inherit;
     color: var(--ink);
     background: var(--paper-soft);
     border: 1.5px solid var(--line);
-    border-radius: 6px;
+    border-radius: 3px;
+    padding: 0;
     caret-color: var(--forest);
   }
-  .cells input:focus{
-    background: #fff;
-    border-color: var(--forest);
-  }
-  .cells input.is-revealed{
-    background: #FCF3D8;
-    border-color: var(--gold);
-    color: var(--gold-ink);
+  .cell-wrap input:focus{ background: #fff; border-color: var(--forest); }
+  .cell-wrap.is-active-word input{ background: #EAF1F0; }
+  .cell-wrap.is-revealed input{ background: var(--gold-soft); border-color: var(--gold); color: var(--gold-ink); }
+  .cell-wrap.is-solved input{ border-color: var(--gold); }
+  .cell-wrap.is-bonus input{ box-shadow: inset 0 0 0 1.5px var(--gold); }
+
+  @media (min-width: 480px){
+    .cell-wrap, .cell-blocked{ width: 2rem; height: 2rem; }
+    .cell-wrap input{ font-size: 1.05rem; }
   }
 
-  /* ---------- Actions ---------- */
-  .actions{
-    margin-top: 1.75rem;
-    text-align: center;
+  /* ---------- Clue lists ---------- */
+  .clue-columns{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
   }
+  @media (min-width: 620px){
+    .clue-columns{ grid-template-columns: 1fr 1fr; }
+  }
+  .clue-block h2{
+    font-size: .85rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--ink-soft);
+    margin: 0 0 .6rem;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+  }
+  .clue-list{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+  }
+  .clue-item{
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: .55rem .7rem;
+    font-family: inherit;
+    font-size: .85rem;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .clue-item:hover{ border-color: var(--blue-grey); }
+  .clue-item.is-active{ border-color: var(--forest); background: #EAF1F0; }
+  .clue-item.is-solved{ border-color: var(--gold); }
+  .clue-item .num{ font-weight: 700; color: var(--forest); margin-right: .3rem; }
+  .clue-item .count{ color: var(--ink-soft); font-size: .78rem; }
+  .clue-item.is-bonus{ background: var(--gold-soft); border-color: var(--gold); }
+  .clue-item.is-bonus .num{ color: var(--gold-ink); }
+
+  /* ---------- Actions ---------- */
+  .actions{ text-align: center; margin-bottom: 1rem; }
   #reveal-btn{
     appearance: none;
     border: none;
@@ -241,11 +262,34 @@
     cursor: pointer;
   }
   #reveal-btn:hover{ background: #e6b41c; }
-  .actions p{
-    margin: .75rem 0 0;
-    font-size: .82rem;
-    color: var(--ink-soft);
+  .actions p{ margin: .75rem 0 0; font-size: .82rem; color: var(--ink-soft); }
+
+  /* ---------- Bonus banner ---------- */
+  #bonus-banner{
+    display: none;
+    background: var(--forest);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 1.25rem 1.25rem 1.4rem;
+    text-align: center;
+    margin: 1.75rem 0;
   }
+  #bonus-banner.is-visible{ display: block; }
+  #bonus-banner p{
+    margin: 0 0 1rem;
+    font-size: 1rem;
+  }
+  #bonus-banner strong{ color: var(--gold); }
+  #bonus-banner a{
+    display: inline-block;
+    background: var(--gold);
+    color: var(--forest-deep);
+    font-weight: 700;
+    text-decoration: none;
+    padding: .75rem 1.5rem;
+    border-radius: 999px;
+  }
+  #bonus-banner a:hover{ background: #e6b41c; }
 
   /* ---------- Footer ---------- */
   footer{
@@ -255,19 +299,11 @@
     font-size: .85rem;
     border-top: 1px solid var(--line);
   }
-  footer a{
-    color: var(--ink-soft);
-    text-decoration: none;
-    font-weight: 600;
-  }
+  footer a{ color: var(--ink-soft); text-decoration: none; font-weight: 600; }
   footer a:hover{ color: var(--forest); }
 
-  @media (min-width: 480px){
-    .cells input{ width: 2.3rem; height: 2.5rem; font-size: 1.15rem; }
-  }
-
   @media (prefers-reduced-motion: reduce){
-    .clue-card{ transition: none; }
+    .cell-wrap input{ transition: none; }
   }
 </style>
 </head>
@@ -276,13 +312,13 @@
 <header>
   <div class="brand"><strong>ekodev</strong> by epsa</div>
   <h1>🧩 Le mot fléché de la rentrée</h1>
-  <p class="kicker">Un dernier jeu avant de reprendre les choses sérieuses.</p>
+  <p class="kicker">Un dernier jeu avant de reprendre les choses sérieuses — avec un mot mystère à la clé.</p>
 </header>
 
 <main>
   <p class="intro">
-    Cet été a été (vraiment) chaud. <strong>Quatre mots</strong> s'y cachent —
-    trouvez-les, ils annoncent tout ce qui vous attend à la rentrée.
+    Cet été a été (vraiment) chaud. <strong>Quatorze mots</strong> se cachent dans cette grille —
+    dont un, tout spécial, qui n'apparaît que si vous résolvez la grille (ou cliquez sur « Voir les réponses »).
   </p>
 
   <!--
@@ -293,24 +329,60 @@
     <div class="fallback">
       <h2>Les indices</h2>
       <ol>
-        <li>On l'a vécue trois fois depuis mai, la dernière ayant battu tous les records de juillet. (8 lettres)</li>
-        <li>Le mot que la France — et votre organisation — vont devoir conjuguer avec le climat, encore et encore. (10 lettres)</li>
-        <li>Le nouveau standard européen qui évite à votre PME/ETI de crouler sous les questionnaires ESG de vos clients. (4 lettres)</li>
-        <li>Le maillon de votre chaîne de valeur qui concentre l'essentiel de votre empreinte carbone (indice : ce n'est pas votre siège). (6 lettres)</li>
+        <li>Elle a battu tous les records en juillet 2026. (8 lettres)</li>
+        <li>Ce que votre organisation doit apprendre à faire, encore et encore, face au climat. (10 lettres)</li>
+        <li>Ce que gagne une organisation qui anticipe plutôt que subit. (10 lettres)</li>
+        <li>Le bilan qu'on ne peut plus éviter de faire. (7 lettres)</li>
+        <li>Le grand enjeu qui arrive juste après le climat sur la liste des risques. (12 lettres)</li>
+        <li>Le paquet européen qui a allégé la CSRD en 2026. (7 lettres)</li>
+        <li>La grille de classification verte de l'UE. (9 lettres)</li>
+        <li>Le sujet de vos trajets domicile-travail, version durable. (8 lettres)</li>
+        <li>Celui à qui l'on va de plus en plus demander des comptes ESG. (11 lettres)</li>
+        <li>L'objectif ultime derrière tous les plans d'action climat. (13 lettres)</li>
+        <li>Le nouveau standard EFRAG pour les PME non cotées. (4 lettres)</li>
+        <li>Là où se cache l'essentiel de votre Scope 3. (6 lettres)</li>
+        <li>L'organisme qui a conçu le standard VSME. (5 lettres)</li>
+        <li>Le mot qui apparaît quand vous avez tout trouvé... et qui nous va très bien. (10 lettres)</li>
       </ol>
       <details>
         <summary>Voir les réponses</summary>
-        <p class="answers">CANICULE · ADAPTATION · VSME · ACHATS</p>
+        <p class="answers">
+          CANICULE · ADAPTATION · RESILIENCE · CARBONE · BIODIVERSITE · OMNIBUS ·
+          TAXONOMIE · MOBILITE · FOURNISSEUR · DECARBONATION · VSME · ACHATS · EFRAG ·
+          et le mot mystère : <strong>ECHANGEONS</strong>
+        </p>
       </details>
+      <p class="cta">
+        🎯 <a href="mailto:info@ekodev.com?subject=Échangeons%20!">Échangeons — prenons rendez-vous →</a>
+      </p>
     </div>
   </noscript>
 
-  <!-- Grille interactive : construite par le script si JavaScript est actif -->
-  <div id="puzzle" aria-live="polite"></div>
+  <div class="grid-wrapper">
+    <div class="grid-scroll">
+      <div id="grid" aria-label="Grille de mots fléchés" role="group"></div>
+    </div>
+  </div>
 
   <div class="actions">
     <button id="reveal-btn" type="button">Voir les réponses</button>
-    <p>Ça ne réinitialise rien de ce que vous avez déjà tapé 🙂</p>
+    <p>Ça ne réinitialise pas ce que vous avez déjà tapé 🙂</p>
+  </div>
+
+  <div id="bonus-banner" role="status" aria-live="polite">
+    <p>🎉 Vous avez trouvé le mot mystère : <strong>ÉCHANGEONS !</strong><br>On en profite ?</p>
+    <a id="bonus-cta" href="#" target="_blank" rel="noopener">Réserver un créneau →</a>
+  </div>
+
+  <div class="clue-columns">
+    <div class="clue-block">
+      <h2>➡ Horizontalement</h2>
+      <ul class="clue-list" id="clues-h"></ul>
+    </div>
+    <div class="clue-block">
+      <h2>⬇ Verticalement</h2>
+      <ul class="clue-list" id="clues-v"></ul>
+    </div>
   </div>
 </main>
 
@@ -323,170 +395,359 @@
   "use strict";
 
   /* ------------------------------------------------------------
-     Contenu du mot fléché — à mettre à jour chaque année.
-     Chaque entrée : { indice: texte de la définition, reponse: mot en MAJUSCULES sans accent ni espace }
-     NB : si vous changez ces mots, pensez à mettre à jour aussi le bloc <noscript> statique ci-dessus.
+     CONFIG — à modifier avant publication
   ------------------------------------------------------------ */
-  var MOTS = [
-    {
-      indice: "On l'a vécue trois fois depuis mai, la dernière ayant battu tous les records de juillet.",
-      reponse: "CANICULE"
-    },
-    {
-      indice: "Le mot que la France — et votre organisation — vont devoir conjuguer avec le climat, encore et encore.",
-      reponse: "ADAPTATION"
-    },
-    {
-      indice: "Le nouveau standard européen qui évite à votre PME/ETI de crouler sous les questionnaires ESG de vos clients.",
-      reponse: "VSME"
-    },
-    {
-      indice: "Le maillon de votre chaîne de valeur qui concentre l'essentiel de votre empreinte carbone (indice : ce n'est pas votre siège).",
-      reponse: "ACHATS"
-    }
+  // Remplacez par votre vrai lien de prise de RDV (Calendly, HubSpot Meetings...)
+  // Par défaut : un mailto pré-rempli, qui fonctionne sans rien configurer.
+  var RDV_URL = "mailto:info@ekodev.com?subject=%C3%89changeons%20!&body=Bonjour%2C%20j%27ai%20trouv%C3%A9%20le%20mot%20myst%C3%A8re%20%3A%20%C3%A9changeons%20!";
+
+  /* ------------------------------------------------------------
+     CONTENU DE LA GRILLE — à mettre à jour chaque année.
+     Chaque entrée : { clue, answer, row, col, dir }
+       - answer : MAJUSCULES, sans accent, sans espace
+       - row/col : position de la PREMIÈRE lettre dans la grille (0-indexé)
+       - dir : "H" (horizontal, vers la droite) ou "V" (vertical, vers le bas)
+       - bonus: true pour le mot mystère qui déclenche la bannière de RDV
+
+     ⚠️ Contrairement à une simple liste, un vrai mot fléché exige que les mots
+     s'entrecroisent sur de VRAIES lettres communes. Si vous changez un mot,
+     ses coordonnées (row/col/dir) doivent être recalculées pour que les
+     croisements restent valides — ce fichier ne le vérifie pas tout seul.
+     Le plus sûr : redemander une grille complète plutôt que de patcher un mot.
+  ------------------------------------------------------------ */
+  var WORDS = [
+    { clue: "Elle a battu tous les records en juillet 2026.", answer: "CANICULE", row: 0, col: 5, dir: "V" },
+    { clue: "Ce que votre organisation doit apprendre à faire, encore et encore, face au climat.", answer: "ADAPTATION", row: 7, col: 7, dir: "V" },
+    { clue: "Ce que gagne une organisation qui anticipe plutôt que subit.", answer: "RESILIENCE", row: 14, col: 9, dir: "H" },
+    { clue: "Le bilan qu'on ne peut plus éviter de faire.", answer: "CARBONE", row: 18, col: 3, dir: "H" },
+    { clue: "Le grand enjeu qui arrive juste après le climat sur la liste des risques.", answer: "BIODIVERSITE", row: 7, col: 9, dir: "V" },
+    { clue: "Le paquet européen qui a allégé la CSRD en 2026.", answer: "OMNIBUS", row: 10, col: 13, dir: "H" },
+    { clue: "La grille de classification verte de l'UE.", answer: "TAXONOMIE", row: 3, col: 11, dir: "V" },
+    { clue: "Le sujet de vos trajets domicile-travail, version durable.", answer: "MOBILITE", row: 1, col: 13, dir: "V" },
+    { clue: "Celui à qui l'on va de plus en plus demander des comptes ESG.", answer: "FOURNISSEUR", row: 6, col: 15, dir: "V" },
+    { clue: "L'objectif ultime derrière tous les plans d'action climat.", answer: "DECARBONATION", row: 7, col: 4, dir: "H" },
+    { clue: "Le nouveau standard EFRAG pour les PME non cotées.", answer: "VSME", row: 13, col: 11, dir: "V" },
+    { clue: "Là où se cache l'essentiel de votre Scope 3.", answer: "ACHATS", row: 13, col: 17, dir: "V" },
+    { clue: "L'organisme qui a conçu le standard VSME.", answer: "EFRAG", row: 15, col: 0, dir: "V" },
+    { clue: "Le mot qui apparaît quand vous avez tout trouvé... et qui nous va très bien.", answer: "ECHANGEONS", row: 15, col: 0, dir: "H", bonus: true }
   ];
 
-  var puzzleEl = document.getElementById("puzzle");
+  var gridEl = document.getElementById("grid");
+  var cluesHEl = document.getElementById("clues-h");
+  var cluesVEl = document.getElementById("clues-v");
   var revealBtn = document.getElementById("reveal-btn");
+  var bonusBanner = document.getElementById("bonus-banner");
+  var bonusCta = document.getElementById("bonus-cta");
 
-  var ARROW_SVG =
-    '<svg class="arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
-    '<path d="M4 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" ' +
-    'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  bonusCta.setAttribute("href", RDV_URL);
 
-  function buildPuzzle() {
-    MOTS.forEach(function (mot, wordIndex) {
-      var card = document.createElement("section");
-      card.className = "clue-card";
-      card.setAttribute("data-word-index", wordIndex);
+  /* ---------- Build the cell model from WORDS ---------- */
+  var cells = {};   // "r,c" -> { r, c, letter, wordIndices: [wordIndex,...], el, inputEl, numberEl }
+  var minR = Infinity, maxR = -Infinity, minC = Infinity, maxC = -Infinity;
 
-      var head = document.createElement("div");
-      head.className = "clue-head";
+  WORDS.forEach(function (w, wi) {
+    w.cellsKeys = [];
+    for (var i = 0; i < w.answer.length; i++) {
+      var r = w.row + (w.dir === "V" ? i : 0);
+      var c = w.col + (w.dir === "H" ? i : 0);
+      var key = r + "," + c;
+      if (!cells[key]) {
+        cells[key] = { r: r, c: c, letter: w.answer[i], wordIndices: [] };
+      }
+      cells[key].wordIndices.push(wi);
+      w.cellsKeys.push(key);
+      minR = Math.min(minR, r); maxR = Math.max(maxR, r);
+      minC = Math.min(minC, c); maxC = Math.max(maxC, c);
+    }
+  });
 
-      var number = document.createElement("span");
-      number.className = "clue-number";
-      number.textContent = wordIndex + 1;
-      number.setAttribute("aria-hidden", "true");
+  /* ---------- Numbering (classic crossword convention) ---------- */
+  var startKeyList = [];
+  WORDS.forEach(function (w) {
+    var key = w.row + "," + w.col;
+    if (startKeyList.indexOf(key) === -1) startKeyList.push(key);
+  });
+  startKeyList.sort(function (a, b) {
+    var pa = a.split(",").map(Number), pb = b.split(",").map(Number);
+    return pa[0] - pb[0] || pa[1] - pb[1];
+  });
+  var numberByKey = {};
+  startKeyList.forEach(function (key, idx) { numberByKey[key] = idx + 1; });
+  WORDS.forEach(function (w) { w.number = numberByKey[w.row + "," + w.col]; });
 
-      var clueId = "clue-" + wordIndex;
-      var text = document.createElement("p");
-      text.className = "clue-text";
-      text.id = clueId;
-      text.textContent = mot.indice;
+  /* ---------- Render grid ---------- */
+  var rows = maxR - minR + 1;
+  var cols = maxC - minC + 1;
+  gridEl.style.gridTemplateColumns = "repeat(" + cols + ", 1fr)";
+  gridEl.style.gridTemplateRows = "repeat(" + rows + ", 1fr)";
 
-      head.appendChild(number);
-      head.appendChild(text);
+  for (var r = minR; r <= maxR; r++) {
+    for (var c = minC; c <= maxC; c++) {
+      var key = r + "," + c;
+      var cellData = cells[key];
+      if (!cellData) {
+        var blocked = document.createElement("div");
+        blocked.className = "cell-blocked";
+        blocked.setAttribute("aria-hidden", "true");
+        gridEl.appendChild(blocked);
+        continue;
+      }
+      var wrap = document.createElement("div");
+      wrap.className = "cell-wrap";
+      wrap.setAttribute("data-key", key);
 
-      var row = document.createElement("div");
-      row.className = "cells-row";
-      row.innerHTML = ARROW_SVG;
+      var isBonus = cellData.wordIndices.some(function (wi) { return WORDS[wi].bonus; });
+      if (isBonus) wrap.classList.add("is-bonus");
 
-      var cells = document.createElement("div");
-      cells.className = "cells";
-      cells.setAttribute("role", "group");
-      cells.setAttribute("aria-labelledby", clueId);
-
-      for (var i = 0; i < mot.reponse.length; i++) {
-        var input = document.createElement("input");
-        input.type = "text";
-        input.maxLength = 1;
-        input.autocomplete = "off";
-        input.autocapitalize = "characters";
-        input.spellcheck = false;
-        input.inputMode = "text";
-        input.setAttribute("aria-label", "Lettre " + (i + 1) + " sur " + mot.reponse.length);
-        input.setAttribute("data-word-index", wordIndex);
-        input.setAttribute("data-letter-index", i);
-        cells.appendChild(input);
+      var startKey = r + "," + c;
+      if (numberByKey[startKey]) {
+        var numEl = document.createElement("span");
+        numEl.className = "cell-number";
+        numEl.textContent = numberByKey[startKey];
+        wrap.appendChild(numEl);
       }
 
-      row.appendChild(cells);
-      card.appendChild(head);
-      card.appendChild(row);
-      puzzleEl.appendChild(card);
-    });
+      var input = document.createElement("input");
+      input.type = "text";
+      input.maxLength = 1;
+      input.autocomplete = "off";
+      input.autocapitalize = "characters";
+      input.spellcheck = false;
+      input.inputMode = "text";
+      input.setAttribute("aria-label", "Case ligne " + (r + 1) + ", colonne " + (c + 1));
+      input.setAttribute("data-key", key);
+
+      wrap.appendChild(input);
+      gridEl.appendChild(wrap);
+
+      cellData.el = wrap;
+      cellData.inputEl = input;
+    }
   }
 
-  function allInputsForWord(wordIndex) {
-    return Array.prototype.slice.call(
-      puzzleEl.querySelectorAll('input[data-word-index="' + wordIndex + '"]')
-    );
+  /* ---------- Render clue lists ---------- */
+  function wordLabel(w) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "clue-item";
+    if (w.bonus) btn.classList.add("is-bonus");
+    btn.setAttribute("data-word-start", w.row + "," + w.col);
+    btn.innerHTML =
+      '<span class="num">' + w.number + '.</span>' +
+      escapeHtml(w.clue) +
+      ' <span class="count">(' + w.answer.length + ' lettres)</span>';
+    return btn;
+  }
+  function escapeHtml(s) {
+    var div = document.createElement("div");
+    div.textContent = s;
+    return div.innerHTML;
+  }
+
+  var wordsSortedForList = WORDS.slice().sort(function (a, b) { return a.number - b.number; });
+  wordsSortedForList.forEach(function (w) {
+    var item = wordLabel(w);
+    item.setAttribute("data-word-index", WORDS.indexOf(w));
+    if (w.dir === "H") cluesHEl.appendChild(item);
+    else cluesVEl.appendChild(item);
+  });
+
+  /* ---------- Interaction state ---------- */
+  var activeDirection = "H";
+  var activeWordIndex = null;
+
+  function wordsAtCell(key) {
+    return cells[key] ? cells[key].wordIndices : [];
+  }
+
+  function pickWordForCell(key, preferDir) {
+    var idxs = wordsAtCell(key);
+    if (idxs.length === 0) return null;
+    var preferred = idxs.filter(function (wi) { return WORDS[wi].dir === preferDir; });
+    return (preferred[0] !== undefined ? preferred[0] : idxs[0]);
+  }
+
+  function setActiveWord(wordIndex) {
+    // clear previous highlight
+    document.querySelectorAll(".cell-wrap.is-active-word").forEach(function (el) {
+      el.classList.remove("is-active-word");
+    });
+    document.querySelectorAll(".clue-item.is-active").forEach(function (el) {
+      el.classList.remove("is-active");
+    });
+    activeWordIndex = wordIndex;
+    if (wordIndex === null) return;
+    var w = WORDS[wordIndex];
+    activeDirection = w.dir;
+    w.cellsKeys.forEach(function (key) {
+      if (cells[key] && cells[key].el) cells[key].el.classList.add("is-active-word");
+    });
+    var clueBtn = document.querySelector('.clue-item[data-word-index="' + wordIndex + '"]');
+    if (clueBtn) clueBtn.classList.add("is-active");
+  }
+
+  function focusCell(key) {
+    var cellData = cells[key];
+    if (!cellData || !cellData.inputEl) return;
+    cellData.inputEl.focus();
+    // Select any existing character so the next keystroke replaces it —
+    // without this, typing into an already-filled crossing cell (filled by
+    // another word) is silently blocked by maxlength and auto-advance stalls.
+    cellData.inputEl.select();
+  }
+
+  // handleCellFocus fires on EVERY focus change, including the ones we trigger
+  // ourselves while auto-advancing through a word. It must never switch away
+  // from the word currently being typed just because the new cell also
+  // belongs to another word (that's what happens at every crossing). It only
+  // picks a new word when the current one genuinely doesn't apply here.
+  function handleCellFocus(key) {
+    var idxs = wordsAtCell(key);
+    if (idxs.length === 0) return;
+    if (activeWordIndex !== null && idxs.indexOf(activeWordIndex) !== -1) {
+      setActiveWord(activeWordIndex); // keep going, just refresh highlighting
+      return;
+    }
+    setActiveWord(pickWordForCell(key, activeDirection));
+  }
+
+  // Clicking a cell that is ALREADY the focused cell (a deliberate second
+  // click on a crossing cell) toggles between its across/down word — the
+  // classic crossword-app convention. This is separate from focus handling
+  // so that typing never triggers an unwanted toggle mid-word.
+  var lastClickedKey = null;
+  gridEl.addEventListener("click", function (e) {
+    var input = e.target.closest("input");
+    if (!input) return;
+    var key = input.getAttribute("data-key");
+    var idxs = wordsAtCell(key);
+    if (idxs.length > 1 && key === lastClickedKey && idxs.indexOf(activeWordIndex) !== -1) {
+      var other = idxs.filter(function (wi) { return wi !== activeWordIndex; })[0];
+      if (other !== undefined) setActiveWord(other);
+    }
+    lastClickedKey = key;
+  });
+
+  function nextCellInWord(wordIndex, fromKey, delta) {
+    var w = WORDS[wordIndex];
+    var idx = w.cellsKeys.indexOf(fromKey);
+    var target = idx + delta;
+    if (target < 0 || target >= w.cellsKeys.length) return null;
+    return w.cellsKeys[target];
   }
 
   function checkWordComplete(wordIndex) {
-    var inputs = allInputsForWord(wordIndex);
-    var value = inputs.map(function (inp) { return inp.value.toUpperCase(); }).join("");
-    var card = puzzleEl.querySelector('.clue-card[data-word-index="' + wordIndex + '"]');
-    if (value === MOTS[wordIndex].reponse) {
-      card.classList.add("is-complete");
-    } else {
-      card.classList.remove("is-complete");
-    }
+    var w = WORDS[wordIndex];
+    var value = w.cellsKeys.map(function (key) {
+      return cells[key].inputEl.value.toUpperCase();
+    }).join("");
+    return value === w.answer;
   }
 
-  function handleInput(e) {
-    var target = e.target;
-    if (target.tagName !== "INPUT") return;
+  function refreshSolvedStates() {
+    // reset
+    Object.keys(cells).forEach(function (key) {
+      cells[key].el.classList.remove("is-solved");
+    });
+    document.querySelectorAll(".clue-item.is-solved").forEach(function (el) {
+      el.classList.remove("is-solved");
+    });
 
-    var value = target.value.replace(/[^a-zA-ZÀ-ÿ]/g, "").toUpperCase();
-    target.value = value.slice(-1);
-    target.classList.remove("is-revealed");
-
-    var wordIndex = target.getAttribute("data-word-index");
-    var letterIndex = parseInt(target.getAttribute("data-letter-index"), 10);
-
-    if (target.value) {
-      var inputs = allInputsForWord(wordIndex);
-      var next = inputs[letterIndex + 1];
-      if (next) next.focus();
-    }
-
-    checkWordComplete(wordIndex);
-  }
-
-  function handleKeydown(e) {
-    var target = e.target;
-    if (target.tagName !== "INPUT") return;
-
-    var wordIndex = target.getAttribute("data-word-index");
-    var letterIndex = parseInt(target.getAttribute("data-letter-index"), 10);
-    var inputs = allInputsForWord(wordIndex);
-
-    if (e.key === "Backspace" && !target.value && letterIndex > 0) {
-      var prev = inputs[letterIndex - 1];
-      if (prev) {
-        prev.focus();
-        prev.value = "";
-        checkWordComplete(wordIndex);
+    var bonusSolved = false;
+    WORDS.forEach(function (w, wi) {
+      if (checkWordComplete(wi)) {
+        w.cellsKeys.forEach(function (key) { cells[key].el.classList.add("is-solved"); });
+        var clueBtn = document.querySelector('.clue-item[data-word-index="' + wi + '"]');
+        if (clueBtn) clueBtn.classList.add("is-solved");
+        if (w.bonus) bonusSolved = true;
       }
-    } else if (e.key === "ArrowLeft" && letterIndex > 0) {
-      e.preventDefault();
-      inputs[letterIndex - 1].focus();
-    } else if (e.key === "ArrowRight" && letterIndex < inputs.length - 1) {
-      e.preventDefault();
-      inputs[letterIndex + 1].focus();
+    });
+
+    if (bonusSolved) {
+      bonusBanner.classList.add("is-visible");
     }
   }
 
-  function revealAnswers() {
-    MOTS.forEach(function (mot, wordIndex) {
-      var inputs = allInputsForWord(wordIndex);
-      inputs.forEach(function (input, letterIndex) {
-        var correctLetter = mot.reponse[letterIndex];
-        if (input.value.toUpperCase() !== correctLetter) {
-          input.value = correctLetter;
-          input.classList.add("is-revealed");
+  function normalizeChar(raw) {
+    if (!raw) return "";
+    var stripped = raw.normalize ? raw.normalize("NFD").replace(/[\u0300-\u036f]/g, "") : raw;
+    var upper = stripped.toUpperCase().replace(/[^A-Z]/g, "");
+    return upper.slice(-1);
+  }
+
+  gridEl.addEventListener("focusin", function (e) {
+    if (e.target.tagName !== "INPUT") return;
+    handleCellFocus(e.target.getAttribute("data-key"));
+  });
+
+  gridEl.addEventListener("input", function (e) {
+    var input = e.target;
+    if (input.tagName !== "INPUT") return;
+    var key = input.getAttribute("data-key");
+    var value = normalizeChar(input.value);
+    input.value = value;
+    cells[key].el.classList.remove("is-revealed");
+
+    if (value && activeWordIndex !== null) {
+      var next = nextCellInWord(activeWordIndex, key, 1);
+      if (next) focusCell(next);
+    }
+    refreshSolvedStates();
+  });
+
+  gridEl.addEventListener("keydown", function (e) {
+    var input = e.target;
+    if (input.tagName !== "INPUT") return;
+    var key = input.getAttribute("data-key");
+    var cellData = cells[key];
+
+    if (e.key === "Backspace" && !input.value && activeWordIndex !== null) {
+      var prev = nextCellInWord(activeWordIndex, key, -1);
+      if (prev) {
+        focusCell(prev);
+        cells[prev].inputEl.value = "";
+        refreshSolvedStates();
+      }
+      return;
+    }
+
+    var r = cellData.r, c = cellData.c;
+    var targetKey = null;
+    if (e.key === "ArrowRight") { targetKey = (r) + "," + (c + 1); activeDirection = "H"; }
+    else if (e.key === "ArrowLeft") { targetKey = (r) + "," + (c - 1); activeDirection = "H"; }
+    else if (e.key === "ArrowDown") { targetKey = (r + 1) + "," + (c); activeDirection = "V"; }
+    else if (e.key === "ArrowUp") { targetKey = (r - 1) + "," + (c); activeDirection = "V"; }
+
+    if (targetKey && cells[targetKey]) {
+      e.preventDefault();
+      focusCell(targetKey);
+      setActiveWord(pickWordForCell(targetKey, activeDirection));
+    }
+  });
+
+  cluesHEl.addEventListener("click", handleClueClick);
+  cluesVEl.addEventListener("click", handleClueClick);
+  function handleClueClick(e) {
+    var btn = e.target.closest(".clue-item");
+    if (!btn) return;
+    var wordIndex = parseInt(btn.getAttribute("data-word-index"), 10);
+    setActiveWord(wordIndex);
+    focusCell(WORDS[wordIndex].cellsKeys[0]);
+  }
+
+  revealBtn.addEventListener("click", function () {
+    WORDS.forEach(function (w) {
+      w.cellsKeys.forEach(function (key, i) {
+        var cellData = cells[key];
+        var correct = w.answer[i];
+        if (cellData.inputEl.value.toUpperCase() !== correct) {
+          cellData.inputEl.value = correct;
+          cellData.el.classList.add("is-revealed");
         }
       });
-      checkWordComplete(wordIndex);
     });
-  }
-
-  buildPuzzle();
-
-  puzzleEl.addEventListener("input", handleInput);
-  puzzleEl.addEventListener("keydown", handleKeydown);
-  revealBtn.addEventListener("click", revealAnswers);
+    refreshSolvedStates();
+  });
 })();
 </script>
 
