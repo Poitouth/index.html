@@ -69,11 +69,7 @@
     color: var(--blue-grey);
     margin-bottom: 1.1rem;
   }
-  .brand strong{
-    color: #fff;
-    font-weight: 700;
-    font-size: 1.05rem;
-  }
+  .brand strong{ color: #fff; font-weight: 700; font-size: 1.05rem; }
   header h1{
     margin: 0 auto;
     max-width: 32rem;
@@ -91,24 +87,34 @@
   }
 
   /* ---------- Main ---------- */
-  main{
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 2rem 1.1rem 3rem;
-  }
+  main{ max-width: 720px; margin: 0 auto; padding: 2rem 1.1rem 3rem; }
 
   .intro{
     text-align: center;
     color: var(--ink-soft);
     font-size: 1rem;
-    margin: 0 0 1.75rem;
+    margin: 0 0 .75rem;
     max-width: 34rem;
     margin-left: auto;
     margin-right: auto;
   }
   .intro strong{ color: var(--ink); }
 
-  /* ---------- Fallback (no-JS) : contenu 100% statique ---------- */
+  .mystery-hint{
+    display: block;
+    text-align: center;
+    background: var(--gold-soft);
+    border: 1px solid var(--gold);
+    color: var(--gold-ink);
+    border-radius: 999px;
+    font-size: .82rem;
+    font-weight: 700;
+    padding: .5rem 1rem;
+    max-width: fit-content;
+    margin: 0 auto 1.75rem;
+  }
+
+  /* ---------- Fallback (no-JS) ---------- */
   noscript .fallback{
     display: block;
     background: var(--paper);
@@ -120,10 +126,8 @@
   .fallback h2{ font-size: 1rem; margin: 0 0 .75rem; }
   .fallback ol{ margin: 0; padding-left: 1.2rem; }
   .fallback li{ margin-bottom: .5rem; }
-  .fallback details{ margin-top: 1rem; }
-  .fallback summary{ cursor: pointer; font-weight: 700; color: var(--forest); }
-  .fallback .answers{ margin-top: .6rem; color: var(--ink-soft); }
   .fallback .cta{ margin-top: 1rem; }
+  .fallback .cta a{ font-weight: 700; }
 
   /* ---------- Grid wrapper ---------- */
   .grid-wrapper{
@@ -131,20 +135,15 @@
     border: 1px solid var(--line);
     border-radius: var(--radius);
     padding: 1rem;
-    margin-bottom: 1.75rem;
+    margin-bottom: 1.5rem;
   }
   .grid-scroll{
     overflow: auto;
     -webkit-overflow-scrolling: touch;
-    max-height: 62vh;
+    max-height: 68vh;
     padding-bottom: .35rem;
   }
-  #grid{
-    display: grid;
-    gap: 2px;
-    width: max-content;
-    margin: 0 auto;
-  }
+  #grid{ display: grid; gap: 2px; width: max-content; margin: 0 auto; }
   #grid:empty::before{
     content: "Chargement de la grille…";
     display: block;
@@ -152,15 +151,8 @@
     font-size: .9rem;
     padding: 1rem;
   }
-  .cell-wrap{
-    position: relative;
-    width: 1.75rem;
-    height: 1.75rem;
-  }
-  .cell-blocked{
-    width: 1.75rem;
-    height: 1.75rem;
-  }
+  .cell-wrap{ position: relative; width: 1.85rem; height: 1.85rem; }
+  .cell-blocked{ width: 1.85rem; height: 1.85rem; }
   .cell-number{
     position: absolute;
     top: 1px;
@@ -170,20 +162,39 @@
     color: var(--ink-soft);
     line-height: 1;
     pointer-events: none;
-    z-index: 1;
+    z-index: 2;
+  }
+  .cell-bonus-badge{
+    position: absolute;
+    bottom: -3px;
+    right: -3px;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background: var(--forest);
+    color: var(--gold);
+    font-size: .55rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    pointer-events: none;
+    z-index: 3;
+    box-shadow: 0 0 0 1.5px #fff;
   }
   .cell-wrap input{
     width: 100%;
     height: 100%;
     text-align: center;
     text-transform: uppercase;
-    font-size: .95rem;
+    font-size: 1rem;
     font-weight: 700;
     font-family: inherit;
     color: var(--ink);
     background: var(--paper-soft);
     border: 1.5px solid var(--line);
-    border-radius: 3px;
+    border-radius: 4px;
     padding: 0;
     caret-color: var(--forest);
   }
@@ -191,12 +202,59 @@
   .cell-wrap.is-active-word input{ background: #EAF1F0; }
   .cell-wrap.is-revealed input{ background: var(--gold-soft); border-color: var(--gold); color: var(--gold-ink); }
   .cell-wrap.is-solved input{ border-color: var(--gold); }
-  .cell-wrap.is-bonus input{ box-shadow: inset 0 0 0 1.5px var(--gold); }
 
   @media (min-width: 480px){
-    .cell-wrap, .cell-blocked{ width: 2rem; height: 2rem; }
-    .cell-wrap input{ font-size: 1.05rem; }
+    .cell-wrap, .cell-blocked{ width: 2.1rem; height: 2.1rem; }
+    .cell-wrap input{ font-size: 1.1rem; }
   }
+
+  /* ---------- Mystery strip (outside the grid) ---------- */
+  .mystery-wrapper{
+    background: var(--forest);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.1rem 1.25rem;
+    margin-bottom: 1.75rem;
+    text-align: center;
+  }
+  .mystery-wrapper h2{
+    color: #fff;
+    font-size: .95rem;
+    margin: 0 0 .2rem;
+  }
+  .mystery-wrapper p{
+    color: rgba(255,255,255,0.75);
+    font-size: .8rem;
+    margin: 0 0 .9rem;
+  }
+  .mystery-boxes{
+    display: flex;
+    justify-content: center;
+    gap: .3rem;
+    flex-wrap: wrap;
+  }
+  .mystery-box{
+    width: 1.8rem;
+    height: 2.1rem;
+    background: rgba(255,255,255,0.08);
+    border: 1.5px solid rgba(242,194,48,0.5);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: var(--gold);
+    position: relative;
+  }
+  .mystery-box .idx{
+    position: absolute;
+    top: 1px;
+    left: 3px;
+    font-size: .5rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.55);
+  }
+  .mystery-box.is-filled{ background: rgba(242,194,48,0.18); }
 
   /* ---------- Clue lists ---------- */
   .clue-columns{
@@ -205,7 +263,7 @@
     gap: 1.5rem;
     margin-bottom: 1.5rem;
   }
-  @media (min-width: 620px){
+  @media (min-width: 560px){
     .clue-columns{ grid-template-columns: 1fr 1fr; }
   }
   .clue-block h2{
@@ -218,14 +276,7 @@
     align-items: center;
     gap: .4rem;
   }
-  .clue-list{
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: .4rem;
-  }
+  .clue-list{ list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .4rem; }
   .clue-item{
     display: block;
     width: 100%;
@@ -244,8 +295,6 @@
   .clue-item.is-solved{ border-color: var(--gold); }
   .clue-item .num{ font-weight: 700; color: var(--forest); margin-right: .3rem; }
   .clue-item .count{ color: var(--ink-soft); font-size: .78rem; }
-  .clue-item.is-bonus{ background: var(--gold-soft); border-color: var(--gold); }
-  .clue-item.is-bonus .num{ color: var(--gold-ink); }
 
   /* ---------- Actions ---------- */
   .actions{ text-align: center; margin-bottom: 1rem; }
@@ -272,13 +321,10 @@
     border-radius: var(--radius);
     padding: 1.25rem 1.25rem 1.4rem;
     text-align: center;
-    margin: 1.75rem 0;
+    margin: 0 0 1.75rem;
   }
   #bonus-banner.is-visible{ display: block; }
-  #bonus-banner p{
-    margin: 0 0 1rem;
-    font-size: 1rem;
-  }
+  #bonus-banner p{ margin: 0 0 1rem; font-size: 1rem; }
   #bonus-banner strong{ color: var(--gold); }
   #bonus-banner a{
     display: inline-block;
@@ -317,9 +363,9 @@
 
 <main>
   <p class="intro">
-    Cet été a été (vraiment) chaud. <strong>Quatorze mots</strong> se cachent dans cette grille —
-    dont un, tout spécial, qui n'apparaît que si vous résolvez la grille (ou cliquez sur « Voir les réponses »).
+    Cet été a été (vraiment) chaud. <strong>Huit mots</strong> se cachent dans cette grille.
   </p>
+  <span class="mystery-hint">🔑 Certaines cases numérotées en doré forment, ensemble, un mot mystère</span>
 
   <!--
     Fallback 100% statique : visible uniquement si JavaScript est désactivé.
@@ -329,31 +375,17 @@
     <div class="fallback">
       <h2>Les indices</h2>
       <ol>
-        <li>Elle a battu tous les records en juillet 2026. (8 lettres)</li>
-        <li>Ce que votre organisation doit apprendre à faire, encore et encore, face au climat. (10 lettres)</li>
-        <li>Ce que gagne une organisation qui anticipe plutôt que subit. (10 lettres)</li>
-        <li>Le bilan qu'on ne peut plus éviter de faire. (7 lettres)</li>
-        <li>Le grand enjeu qui arrive juste après le climat sur la liste des risques. (12 lettres)</li>
-        <li>Le paquet européen qui a allégé la CSRD en 2026. (7 lettres)</li>
-        <li>La grille de classification verte de l'UE. (9 lettres)</li>
-        <li>Le sujet de vos trajets domicile-travail, version durable. (8 lettres)</li>
-        <li>Celui à qui l'on va de plus en plus demander des comptes ESG. (11 lettres)</li>
-        <li>L'objectif ultime derrière tous les plans d'action climat. (13 lettres)</li>
-        <li>Le nouveau standard EFRAG pour les PME non cotées. (4 lettres)</li>
+        <li>Partielle en France, totale en Espagne, elle a assombri le ciel ce 12 août 2026. (7 lettres)</li>
         <li>Là où se cache l'essentiel de votre Scope 3. (6 lettres)</li>
-        <li>L'organisme qui a conçu le standard VSME. (5 lettres)</li>
-        <li>Le mot qui apparaît quand vous avez tout trouvé... et qui nous va très bien. (10 lettres)</li>
+        <li>Le paquet européen qui a allégé la CSRD en 2026. (7 lettres)</li>
+        <li>Ce que votre organisation doit apprendre à faire, encore et encore, face au climat. (10 lettres)</li>
+        <li>Elle a battu tous les records en juillet 2026. (8 lettres)</li>
+        <li>Le G de ESG. (11 lettres)</li>
+        <li>Le grand enjeu qui arrive juste après le climat sur la liste des risques. (12 lettres)</li>
+        <li>Ce que gagne une organisation qui anticipe plutôt que subit. (10 lettres)</li>
       </ol>
-      <details>
-        <summary>Voir les réponses</summary>
-        <p class="answers">
-          CANICULE · ADAPTATION · RESILIENCE · CARBONE · BIODIVERSITE · OMNIBUS ·
-          TAXONOMIE · MOBILITE · FOURNISSEUR · DECARBONATION · VSME · ACHATS · EFRAG ·
-          et le mot mystère : <strong>ECHANGEONS</strong>
-        </p>
-      </details>
       <p class="cta">
-        🎯 <a href="mailto:info@ekodev.com?subject=Échangeons%20!">Échangeons — prenons rendez-vous →</a>
+        🎯 <a href="https://meetings-eu1.hubspot.com/hpoitout" target="_blank" rel="noopener">Échangeons — prenons rendez-vous →</a>
       </p>
     </div>
   </noscript>
@@ -369,9 +401,15 @@
     <p>Ça ne réinitialise pas ce que vous avez déjà tapé 🙂</p>
   </div>
 
+  <div class="mystery-wrapper">
+    <h2>🔑 Le mot mystère</h2>
+    <p>Reportez ici les lettres des cases numérotées en doré dans la grille.</p>
+    <div class="mystery-boxes" id="mystery-boxes"></div>
+  </div>
+
   <div id="bonus-banner" role="status" aria-live="polite">
     <p>🎉 Vous avez trouvé le mot mystère : <strong>ÉCHANGEONS !</strong><br>On en profite ?</p>
-    <a id="bonus-cta" href="#" target="_blank" rel="noopener">Réserver un créneau →</a>
+    <a id="bonus-cta" href="https://meetings-eu1.hubspot.com/hpoitout" target="_blank" rel="noopener">Réserver un créneau →</a>
   </div>
 
   <div class="clue-columns">
@@ -395,41 +433,51 @@
   "use strict";
 
   /* ------------------------------------------------------------
-     CONFIG — à modifier avant publication
+     CONFIG
   ------------------------------------------------------------ */
-  // Remplacez par votre vrai lien de prise de RDV (Calendly, HubSpot Meetings...)
-  // Par défaut : un mailto pré-rempli, qui fonctionne sans rien configurer.
-  var RDV_URL = "mailto:info@ekodev.com?subject=%C3%89changeons%20!&body=Bonjour%2C%20j%27ai%20trouv%C3%A9%20le%20mot%20myst%C3%A8re%20%3A%20%C3%A9changeons%20!";
+  var RDV_URL = "https://meetings-eu1.hubspot.com/hpoitout";
 
   /* ------------------------------------------------------------
      CONTENU DE LA GRILLE — à mettre à jour chaque année.
      Chaque entrée : { clue, answer, row, col, dir }
        - answer : MAJUSCULES, sans accent, sans espace
-       - row/col : position de la PREMIÈRE lettre dans la grille (0-indexé)
-       - dir : "H" (horizontal, vers la droite) ou "V" (vertical, vers le bas)
-       - bonus: true pour le mot mystère qui déclenche la bannière de RDV
+       - row/col : position de la PREMIÈRE lettre (0-indexé)
+       - dir : "H" (vers la droite) ou "V" (vers le bas)
 
-     ⚠️ Contrairement à une simple liste, un vrai mot fléché exige que les mots
-     s'entrecroisent sur de VRAIES lettres communes. Si vous changez un mot,
-     ses coordonnées (row/col/dir) doivent être recalculées pour que les
-     croisements restent valides — ce fichier ne le vérifie pas tout seul.
-     Le plus sûr : redemander une grille complète plutôt que de patcher un mot.
+     ⚠️ Comme pour tout vrai mot fléché, les mots doivent s'entrecroiser sur
+     de vraies lettres communes : changer un mot exige de recalculer ses
+     coordonnées. Le plus sûr est de redemander une grille complète.
   ------------------------------------------------------------ */
   var WORDS = [
-    { clue: "Elle a battu tous les records en juillet 2026.", answer: "CANICULE", row: 0, col: 5, dir: "V" },
-    { clue: "Ce que votre organisation doit apprendre à faire, encore et encore, face au climat.", answer: "ADAPTATION", row: 7, col: 7, dir: "V" },
-    { clue: "Ce que gagne une organisation qui anticipe plutôt que subit.", answer: "RESILIENCE", row: 14, col: 9, dir: "H" },
-    { clue: "Le bilan qu'on ne peut plus éviter de faire.", answer: "CARBONE", row: 18, col: 3, dir: "H" },
-    { clue: "Le grand enjeu qui arrive juste après le climat sur la liste des risques.", answer: "BIODIVERSITE", row: 7, col: 9, dir: "V" },
-    { clue: "Le paquet européen qui a allégé la CSRD en 2026.", answer: "OMNIBUS", row: 10, col: 13, dir: "H" },
-    { clue: "La grille de classification verte de l'UE.", answer: "TAXONOMIE", row: 3, col: 11, dir: "V" },
-    { clue: "Le sujet de vos trajets domicile-travail, version durable.", answer: "MOBILITE", row: 1, col: 13, dir: "V" },
-    { clue: "Celui à qui l'on va de plus en plus demander des comptes ESG.", answer: "FOURNISSEUR", row: 6, col: 15, dir: "V" },
-    { clue: "L'objectif ultime derrière tous les plans d'action climat.", answer: "DECARBONATION", row: 7, col: 4, dir: "H" },
-    { clue: "Le nouveau standard EFRAG pour les PME non cotées.", answer: "VSME", row: 13, col: 11, dir: "V" },
-    { clue: "Là où se cache l'essentiel de votre Scope 3.", answer: "ACHATS", row: 13, col: 17, dir: "V" },
-    { clue: "L'organisme qui a conçu le standard VSME.", answer: "EFRAG", row: 15, col: 0, dir: "V" },
-    { clue: "Le mot qui apparaît quand vous avez tout trouvé... et qui nous va très bien.", answer: "ECHANGEONS", row: 15, col: 0, dir: "H", bonus: true }
+    { clue: "Partielle en France, totale en Espagne, elle a assombri le ciel ce 12 août 2026.", answer: "ECLIPSE", row: 0, col: 6, dir: "V" },
+    { clue: "Là où se cache l'essentiel de votre Scope 3.", answer: "ACHATS", row: 1, col: 8, dir: "V" },
+    { clue: "Le paquet européen qui a allégé la CSRD en 2026.", answer: "OMNIBUS", row: 2, col: 0, dir: "V" },
+    { clue: "Ce que votre organisation doit apprendre à faire, encore et encore, face au climat.", answer: "ADAPTATION", row: 2, col: 10, dir: "V" },
+    { clue: "Elle a battu tous les records en juillet 2026.", answer: "CANICULE", row: 3, col: 4, dir: "V" },
+    { clue: "Le G de ESG.", answer: "GOUVERNANCE", row: 5, col: 2, dir: "V" },
+    { clue: "Le grand enjeu qui arrive juste après le climat sur la liste des risques.", answer: "BIODIVERSITE", row: 6, col: 0, dir: "H" },
+    { clue: "Ce que gagne une organisation qui anticipe plutôt que subit.", answer: "RESILIENCE", row: 6, col: 7, dir: "V" }
+  ];
+
+  /* ------------------------------------------------------------
+     MOT MYSTÈRE — hors grille.
+     BONUS_CELLS pointe vers 10 cases DÉJÀ présentes dans WORDS
+     ci-dessus (donc pas de mot séparé à placer). Chaque cellule doit
+     porter, à sa position, la lettre correspondante de BONUS_WORD —
+     c'est vérifié automatiquement au chargement (voir console si erreur).
+  ------------------------------------------------------------ */
+  var BONUS_WORD = "ECHANGEONS";
+  var BONUS_CELLS = [
+    { row: 0,  col: 6  }, // E — ECLIPSE
+    { row: 3,  col: 4  }, // C — CANICULE
+    { row: 3,  col: 8  }, // H — ACHATS
+    { row: 2,  col: 10 }, // A — ADAPTATION
+    { row: 4,  col: 0  }, // N — OMNIBUS
+    { row: 5,  col: 2  }, // G — GOUVERNANCE
+    { row: 7,  col: 7  }, // E — RESILIENCE
+    { row: 2,  col: 0  }, // O — OMNIBUS
+    { row: 11, col: 10 }, // N — ADAPTATION
+    { row: 6,  col: 8  }  // S — ACHATS
   ];
 
   var gridEl = document.getElementById("grid");
@@ -438,11 +486,12 @@
   var revealBtn = document.getElementById("reveal-btn");
   var bonusBanner = document.getElementById("bonus-banner");
   var bonusCta = document.getElementById("bonus-cta");
+  var mysteryBoxesEl = document.getElementById("mystery-boxes");
 
   bonusCta.setAttribute("href", RDV_URL);
 
   /* ---------- Build the cell model from WORDS ---------- */
-  var cells = {};   // "r,c" -> { r, c, letter, wordIndices: [wordIndex,...], el, inputEl, numberEl }
+  var cells = {};
   var minR = Infinity, maxR = -Infinity, minC = Infinity, maxC = -Infinity;
 
   WORDS.forEach(function (w, wi) {
@@ -451,14 +500,28 @@
       var r = w.row + (w.dir === "V" ? i : 0);
       var c = w.col + (w.dir === "H" ? i : 0);
       var key = r + "," + c;
-      if (!cells[key]) {
-        cells[key] = { r: r, c: c, letter: w.answer[i], wordIndices: [] };
-      }
+      if (!cells[key]) cells[key] = { r: r, c: c, letter: w.answer[i], wordIndices: [] };
       cells[key].wordIndices.push(wi);
       w.cellsKeys.push(key);
       minR = Math.min(minR, r); maxR = Math.max(maxR, r);
       minC = Math.min(minC, c); maxC = Math.max(maxC, c);
     }
+  });
+
+  /* ---------- Wire up bonus cells + integrity check ---------- */
+  var bonusKeyForCell = {}; // "r,c" -> bonus index (0-based)
+  BONUS_CELLS.forEach(function (pos, idx) {
+    var key = pos.row + "," + pos.col;
+    var cellData = cells[key];
+    var expected = BONUS_WORD[idx];
+    if (!cellData) {
+      console.error("Mot mystère : la case", key, "n'existe dans aucun mot de la grille.");
+      return;
+    }
+    if (cellData.letter !== expected) {
+      console.error("Mot mystère : incohérence à", key, "— attendu", expected, "trouvé", cellData.letter);
+    }
+    bonusKeyForCell[key] = idx;
   });
 
   /* ---------- Numbering (classic crossword convention) ---------- */
@@ -496,15 +559,19 @@
       wrap.className = "cell-wrap";
       wrap.setAttribute("data-key", key);
 
-      var isBonus = cellData.wordIndices.some(function (wi) { return WORDS[wi].bonus; });
-      if (isBonus) wrap.classList.add("is-bonus");
-
-      var startKey = r + "," + c;
-      if (numberByKey[startKey]) {
+      if (numberByKey[key]) {
         var numEl = document.createElement("span");
         numEl.className = "cell-number";
-        numEl.textContent = numberByKey[startKey];
+        numEl.textContent = numberByKey[key];
         wrap.appendChild(numEl);
+      }
+
+      if (bonusKeyForCell.hasOwnProperty(key)) {
+        var badge = document.createElement("span");
+        badge.className = "cell-bonus-badge";
+        badge.textContent = bonusKeyForCell[key] + 1;
+        badge.setAttribute("aria-hidden", "true");
+        wrap.appendChild(badge);
       }
 
       var input = document.createElement("input");
@@ -525,40 +592,68 @@
     }
   }
 
+  /* ---------- Render mystery boxes ---------- */
+  BONUS_CELLS.forEach(function (pos, idx) {
+    var box = document.createElement("div");
+    box.className = "mystery-box";
+    box.setAttribute("data-bonus-index", idx);
+    var idxLabel = document.createElement("span");
+    idxLabel.className = "idx";
+    idxLabel.textContent = idx + 1;
+    box.appendChild(idxLabel);
+    var letterSpan = document.createElement("span");
+    letterSpan.className = "letter";
+    box.appendChild(letterSpan);
+    mysteryBoxesEl.appendChild(box);
+  });
+
+  function refreshMysteryStrip() {
+    var allCorrect = true;
+    BONUS_CELLS.forEach(function (pos, idx) {
+      var key = pos.row + "," + pos.col;
+      var cellData = cells[key];
+      var value = cellData && cellData.inputEl ? cellData.inputEl.value.toUpperCase() : "";
+      var box = mysteryBoxesEl.querySelector('.mystery-box[data-bonus-index="' + idx + '"]');
+      var letterSpan = box.querySelector(".letter");
+      letterSpan.textContent = value;
+      var correct = value === BONUS_WORD[idx];
+      box.classList.toggle("is-filled", !!value);
+      if (!correct) allCorrect = false;
+    });
+    if (allCorrect) bonusBanner.classList.add("is-visible");
+  }
+
   /* ---------- Render clue lists ---------- */
-  function wordLabel(w) {
+  function escapeHtml(s) {
+    var div = document.createElement("div");
+    div.textContent = s;
+    return div.innerHTML;
+  }
+  function wordLabel(w, wordIndex) {
     var btn = document.createElement("button");
     btn.type = "button";
     btn.className = "clue-item";
-    if (w.bonus) btn.classList.add("is-bonus");
-    btn.setAttribute("data-word-start", w.row + "," + w.col);
+    btn.setAttribute("data-word-index", wordIndex);
     btn.innerHTML =
       '<span class="num">' + w.number + '.</span>' +
       escapeHtml(w.clue) +
       ' <span class="count">(' + w.answer.length + ' lettres)</span>';
     return btn;
   }
-  function escapeHtml(s) {
-    var div = document.createElement("div");
-    div.textContent = s;
-    return div.innerHTML;
-  }
 
   var wordsSortedForList = WORDS.slice().sort(function (a, b) { return a.number - b.number; });
   wordsSortedForList.forEach(function (w) {
-    var item = wordLabel(w);
-    item.setAttribute("data-word-index", WORDS.indexOf(w));
+    var wordIndex = WORDS.indexOf(w);
+    var item = wordLabel(w, wordIndex);
     if (w.dir === "H") cluesHEl.appendChild(item);
     else cluesVEl.appendChild(item);
   });
 
   /* ---------- Interaction state ---------- */
-  var activeDirection = "H";
+  var activeDirection = "V";
   var activeWordIndex = null;
 
-  function wordsAtCell(key) {
-    return cells[key] ? cells[key].wordIndices : [];
-  }
+  function wordsAtCell(key) { return cells[key] ? cells[key].wordIndices : []; }
 
   function pickWordForCell(key, preferDir) {
     var idxs = wordsAtCell(key);
@@ -568,7 +663,6 @@
   }
 
   function setActiveWord(wordIndex) {
-    // clear previous highlight
     document.querySelectorAll(".cell-wrap.is-active-word").forEach(function (el) {
       el.classList.remove("is-active-word");
     });
@@ -596,25 +690,23 @@
     cellData.inputEl.select();
   }
 
-  // handleCellFocus fires on EVERY focus change, including the ones we trigger
-  // ourselves while auto-advancing through a word. It must never switch away
-  // from the word currently being typed just because the new cell also
-  // belongs to another word (that's what happens at every crossing). It only
-  // picks a new word when the current one genuinely doesn't apply here.
+  // handleCellFocus fires on EVERY focus change, including the ones we
+  // trigger ourselves while auto-advancing through a word. It must never
+  // switch away from the word currently being typed just because the new
+  // cell also belongs to another word (that happens at every crossing).
   function handleCellFocus(key) {
     var idxs = wordsAtCell(key);
     if (idxs.length === 0) return;
     if (activeWordIndex !== null && idxs.indexOf(activeWordIndex) !== -1) {
-      setActiveWord(activeWordIndex); // keep going, just refresh highlighting
+      setActiveWord(activeWordIndex);
       return;
     }
     setActiveWord(pickWordForCell(key, activeDirection));
   }
 
   // Clicking a cell that is ALREADY the focused cell (a deliberate second
-  // click on a crossing cell) toggles between its across/down word — the
-  // classic crossword-app convention. This is separate from focus handling
-  // so that typing never triggers an unwanted toggle mid-word.
+  // click on a crossing cell) toggles between its across/down word. Kept
+  // separate from focus handling so typing never triggers an unwanted toggle.
   var lastClickedKey = null;
   gridEl.addEventListener("click", function (e) {
     var input = e.target.closest("input");
@@ -638,34 +730,23 @@
 
   function checkWordComplete(wordIndex) {
     var w = WORDS[wordIndex];
-    var value = w.cellsKeys.map(function (key) {
-      return cells[key].inputEl.value.toUpperCase();
-    }).join("");
+    var value = w.cellsKeys.map(function (key) { return cells[key].inputEl.value.toUpperCase(); }).join("");
     return value === w.answer;
   }
 
   function refreshSolvedStates() {
-    // reset
-    Object.keys(cells).forEach(function (key) {
-      cells[key].el.classList.remove("is-solved");
-    });
-    document.querySelectorAll(".clue-item.is-solved").forEach(function (el) {
-      el.classList.remove("is-solved");
-    });
+    Object.keys(cells).forEach(function (key) { cells[key].el.classList.remove("is-solved"); });
+    document.querySelectorAll(".clue-item.is-solved").forEach(function (el) { el.classList.remove("is-solved"); });
 
-    var bonusSolved = false;
     WORDS.forEach(function (w, wi) {
       if (checkWordComplete(wi)) {
         w.cellsKeys.forEach(function (key) { cells[key].el.classList.add("is-solved"); });
         var clueBtn = document.querySelector('.clue-item[data-word-index="' + wi + '"]');
         if (clueBtn) clueBtn.classList.add("is-solved");
-        if (w.bonus) bonusSolved = true;
       }
     });
 
-    if (bonusSolved) {
-      bonusBanner.classList.add("is-visible");
-    }
+    refreshMysteryStrip();
   }
 
   function normalizeChar(raw) {
@@ -748,6 +829,8 @@
     });
     refreshSolvedStates();
   });
+
+  refreshMysteryStrip();
 })();
 </script>
 
